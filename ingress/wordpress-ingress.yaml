@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wordpress-ingress
+  namespace: labwordpress
+  labels:
+    app: wordpress
+    tier: front
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: wordpress.compass.com
+    - http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: wordpress
+                port:
+                  number: 80
+            pathType: Exact

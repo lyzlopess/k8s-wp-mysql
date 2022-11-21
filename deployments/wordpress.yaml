@@ -5,31 +5,36 @@ metadata:
   namespace: labwordpress
   labels:
     app: wordpress
+    tier: front
 spec:
   selector:
     matchLabels:
       app: wordpress
+      tier: front
+  strategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app: wordpress
+        tier: front
     spec:
       containers:
-        - name: wordpress
-          image: wordpress:6.0.2
+        - image: wordpress:6.1.1
+          name: wordpress
           env:
             - name: WORDPRESS_DB_HOST
-              value: mysql
+              value: wp-mysql
             - name: WORDPRESS_DB_USER
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: mysql-user
+                  key: mysql_user
             - name: WORDPRESS_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: mysql-password
+                  key: mysql_password
             - name: WORDPRESS_DB_NAME
               value: wordpress
           ports:
