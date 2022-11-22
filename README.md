@@ -16,6 +16,7 @@ Este tópico apresenta a descrição da estrutura do projeto.
 - [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/): contém dados confidenciais, por esse motivo não pode ser exposto neste repositório.
 - [Volumes](/volumes): armazenar arquivos dos *containers*.
 - [Deployments](/deployments): representar uma aplicação que será executada no *cluster*, podendo alterar a quantidade de réplicas simultâneas.  
+- [Ingress](/ingress): expor rotas para fora do *cluster*.
 
 ## Etapas da aplicação
 Este tópico apresenta os estágios a serem seguidos para implementação.  
@@ -85,12 +86,40 @@ kubectl apply -f deployments/wordpress.yaml
 ```sh
 kubectl get deployment -n labwordpress
 ```
+- Aplicar arquivo do *ingress-controller* baseado no nginx.
+```sh
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+```
+- Verificar *pods* do *ingress*.
+```sh
+kubectl get pods -n ingress-nginx
+```
+- Aplicar arquivo do *ingress*.
+```sh
+kubectl apply -f ingress/wordpress-ingress.yaml
+```
+- Verificar *ingress* do *namespace* **labwordpress**.
+```sh
+kubectl get ingress -n labwordpress
+```
 - Listar recursos do *namespace* **labwordpress**.
 ```sh
 kubectl get all -n labwordpress
 ```
 
 ### Acesso
+- Alterar arquivo *hosts* adicionando linha contendo o IP do *host* e o domínio do *host* adicionado no *ingress*.
+```sh
+C:\Windows\System32\drivers\etc\hosts
+```
+```sh
+127.0.0.1    wordpress.compass.com
+```
+- URL *browser*: [wordpress.compass.com](http://wordpress.compass.com)
+- Diretório dos volumes.
+```sh
+\\wsl$\docker-desktop-data\data\k8s-pvs
+```
 - *Container*.
 ```sh
 kubectl exec -it <pod-name> -n labwordpress -- /bin/bash
